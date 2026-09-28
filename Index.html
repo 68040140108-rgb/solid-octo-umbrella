@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตลาดผักผลไม้แสนสนุก - เรียนรู้การนับต่อด้วยตาราง 100</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for cute icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Prompt & Kanit for child-friendly typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Prompt', 'Kanit', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #fef3c7 100%);
+            min-height: 100vh;
+        }
+
+        /* Bounce & Floating Animations */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(4deg); }
+        }
+        @keyframes floatReverse {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(-4deg); }
+        }
+        @keyframes bounceJump {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-24px) scale(1.15); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
+            50% { box-shadow: 0 0 28px rgba(34, 197, 94, 0.9); }
+        }
+        @keyframes talkMouth {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.3); }
+        }
+        @keyframes blinkEye {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+        @keyframes marketAwning {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 0; }
+        }
+
+        .float-anim { animation: floatSlow 3s ease-in-out infinite; }
+        .float-anim-reverse { animation: floatReverse 3.5s ease-in-out infinite; }
+        .bounce-jump { animation: bounceJump 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .pulse-glow { animation: pulseGlow 2s infinite; }
+        .talking .mouth { animation: talkMouth 0.22s infinite alternate; }
+        .eye-blink { transform-origin: center; animation: blinkEye 4s infinite; }
+
+        /* Market Awning Roof Banner */
+        .market-roof {
+            background: repeating-linear-gradient(
+                -45deg,
+                #ef4444,
+                #ef4444 20px,
+                #ffffff 20px,
+                #ffffff 40px
+            );
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Scrollbar for clean visuals */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #86efac; border-radius: 10px; }
+
+        /* Grid item transition */
+        .chart-cell {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased p-2 sm:p-4 md:p-6 flex flex-col justify-between">
+
+    <header class="max-w-5xl mx-auto w-full mb-4">
+        <div class="bg-white/90 backdrop-blur-md rounded-3xl p-4 sm:p-5 shadow-xl border-4 border-amber-300 flex flex-col md:flex-row items-center justify-between gap-4 relative overflow-hidden">
+            
+            <!-- Top Decorative Canopy -->
+            <div class="absolute top-0 left-0 right-0 h-3 market-roof"></div>
+
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-3 pt-2">
+                <div class="w-14 h-14 bg-gradient-to-tr from-emerald-500 to-green-400 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg transform -rotate-6 float-anim">
+                    🧺
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-emerald-800 tracking-wide flex items-center gap-2">
+                        ตลาดผักผลไม้แสนสนุก <span class="text-amber-500 text-sm sm:text-base font-normal bg-amber-100 px-3 py-0.5 rounded-full">(ตารางร้อย 5 ข้อ)</span>
+                    </h1>
+                    <p class="text-xs sm:text-sm text-slate-600">ช่วยแม่ค้าคิดเงินผักสดและเรียนรู้การนับต่อเพิ่มทีละ 10 บนตาราง 100</p>
+                </div>
+            </div>
+
+            <!-- Question Progress & Audio Trigger -->
+            <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                <div class="bg-amber-100 border-2 border-amber-300 rounded-2xl px-4 py-2 text-center w-full sm:w-auto">
+                    <span class="text-xs font-bold text-amber-800 block">ระดับความสนุก</span>
+                    <span id="question-progress-text" class="text-lg font-black text-amber-900">ข้อที่ 1 / 5 ⭐️</span>
+                </div>
+
+                <button id="btn-speak" onclick="speakVendorMessage()" class="w-full sm:w-auto bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 hover:from-amber-500 hover:to-orange-500 text-white font-extrabold py-3 px-6 rounded-2xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-3 group text-lg">
+                    <span class="text-2xl group-hover:scale-125 transition-transform">🔊</span>
+                    <span>ฟังแม่ค้าพูด</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- Left Column: Animated Market Vendor & Question Card -->
+        <section class="lg:col-span-5 flex flex-col gap-4">
+            
+            <!-- Vendor & Speech Bubble Card -->
+            <div class="bg-white rounded-3xl p-5 shadow-xl border-4 border-emerald-300 relative overflow-hidden">
+                <!-- Market Roof Accent -->
+                <div class="absolute top-0 left-0 right-0 h-4 market-roof"></div>
+
+                <div class="flex items-start gap-3 pt-3">
+                    
+                    <!-- Vendor Avatar Cartoon SVG -->
+                    <div id="vendor-avatar" class="relative flex-shrink-0 cursor-pointer group" onclick="speakVendorMessage()" title="กดเพื่อฟังแม่ค้าพูด">
+                        <div class="w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-b from-amber-100 to-orange-100 rounded-full border-4 border-amber-400 flex items-center justify-center overflow-hidden shadow-md float-anim">
+                            <svg class="w-20 h-20 sm:w-24 sm:h-24" viewBox="0 0 100 100">
+                                <!-- Market Bandana / Hat -->
+                                <path d="M 18 38 Q 50 8 82 38 L 88 48 L 12 48 Z" fill="#ef4444" />
+                                <circle cx="50" cy="22" r="6" fill="#fef08a" />
+                                <path d="M 20 40 Q 50 25 80 40" stroke="#fca5a5" stroke-width="2" fill="none" />
+
+                                <!-- Head / Face -->
+                                <circle cx="50" cy="58" r="30" fill="#fde047" />
+                                
+                                <!-- Hair sides -->
+                                <path d="M 20 50 Q 15 65 22 75 Q 26 65 24 52" fill="#78350f" />
+                                <path d="M 80 50 Q 85 65 78 75 Q 74 65 76 52" fill="#78350f" />
+
+                                <!-- Eyes with blink -->
+                                <g class="eye-blink">
+                                    <circle cx="39" cy="52" r="4.5" fill="#1e293b" />
+                                    <circle cx="61" cy="52" r="4.5" fill="#1e293b" />
+                                    <circle cx="40.5" cy="50" r="1.8" fill="#ffffff" />
+                                    <circle cx="62.5" cy="50" r="1.8" fill="#ffffff" />
+                                </g>
+
+                                <!-- Rosy Cheeks -->
+                                <circle cx="31" cy="62" r="5" fill="#f43f5e" opacity="0.45" />
+                                <circle cx="69" cy="62" r="5" fill="#f43f5e" opacity="0.45" />
+
+                                <!-- Apron Strap -->
+                                <path d="M 30 84 L 50 98 L 70 84" stroke="#10b981" stroke-width="6" fill="none" />
+
+                                <!-- Animated Mouth -->
+                                <path class="mouth" d="M 40 68 Q 50 78 60 68 Z" fill="#b91c1c" />
+                            </svg>
+                        </div>
+                        <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full shadow border border-white whitespace-nowrap">
+                            👩‍🌾 แม่ค้าใจดี
+                        </span>
+                    </div>
+
+                    <!-- Speech Bubble -->
+                    <div class="flex-1 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl p-3 sm:p-4 relative text-amber-950 shadow-sm">
+                        <div class="absolute -left-3 top-6 w-0 h-0 border-t-[8px] border-t-transparent border-r-[12px] border-r-amber-300 border-b-[8px] border-b-transparent"></div>
+                        <p id="speech-text" class="text-base sm:text-lg font-bold leading-relaxed">
+                            "ช่วยแม่ค้าคิดหน่อยจ้า..."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Vegetables Showcase (Dynamically populated) -->
+                <div id="veggie-showcase" class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t-2 border-slate-100">
+                    <!-- Javascript populates market items -->
+                </div>
+
+                <!-- Floating Extra Fruit Icons -->
+                <div class="flex justify-around items-center mt-3 pt-2 text-xl opacity-75">
+                    <span class="float-anim" style="animation-delay: 0.2s;">🍎</span>
+                    <span class="float-anim-reverse" style="animation-delay: 0.7s;">🍌</span>
+                    <span class="float-anim" style="animation-delay: 0.4s;">🍉</span>
+                    <span class="float-anim-reverse" style="animation-delay: 0.9s;">🍅</span>
+                    <span class="float-anim" style="animation-delay: 0.6s;">🌽</span>
+                </div>
+
+            </div>
+
+            <!-- Jump Status & Interactive Control Card -->
+            <div class="bg-white rounded-3xl p-5 shadow-xl border-4 border-indigo-200 flex flex-col gap-3">
+                <h3 class="font-extrabold text-indigo-900 text-lg flex items-center justify-between">
+                    <span class="flex items-center gap-2"><span class="text-2xl">🐇</span> การนับต่อบนตารางร้อย (+10)</span>
+                    <span id="jump-step-count" class="text-xs bg-indigo-100 text-indigo-800 px-2.5 py-1 rounded-full font-bold">0 / 2 ครั้ง</span>
+                </h3>
+
+                <div class="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-blue-50 p-3 rounded-2xl border border-indigo-100 text-sm sm:text-base">
+                    <span class="font-bold text-slate-700">ตำแหน่งปัจจุบัน:</span>
+                    <span id="current-pos-badge" class="text-2xl font-black text-indigo-600 bg-white px-4 py-1 rounded-xl shadow-sm border border-indigo-200">
+                        30
+                    </span>
+                </div>
+
+                <!-- Dynamic Jump Action Controls -->
+                <div id="jump-buttons-container" class="flex flex-col gap-2.5 mt-1">
+                    <!-- Dynamically populated jump buttons -->
+                </div>
+
+                <!-- Reset button -->
+                <button onclick="resetCurrentQuestion()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 underline text-center mt-1 transition-colors">
+                    🔄 เริ่มต้นใหม่ข้อนี้
+                </button>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Interactive 100-Chart (ตารางร้อย) -->
+        <section class="lg:col-span-7 bg-white rounded-3xl p-4 sm:p-6 shadow-xl border-4 border-amber-200">
+            
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                <h2 class="text-xl sm:text-2xl font-black text-slate-800 flex items-center gap-2">
+                    <span class="text-emerald-500">📊</span> ตารางร้อย (100-Chart)
+                </h2>
+                <div id="legend-box" class="flex flex-wrap gap-2 text-xs sm:text-sm">
+                    <!-- Legend dynamic -->
+                </div>
+            </div>
+
+            <!-- The 10x10 Grid Container -->
+            <div id="grid-container" class="grid grid-cols-10 gap-1.5 sm:gap-2 p-2 sm:p-3 bg-slate-50 rounded-2xl border-2 border-slate-200 aspect-square max-w-[500px] mx-auto shadow-inner">
+                <!-- Javascript populates 1 to 100 grid cells dynamically -->
+            </div>
+
+            <!-- Formula Banner -->
+            <div id="formula-box" class="mt-4 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border-2 border-amber-300 rounded-2xl p-3 sm:p-4 text-center transition-all shadow-sm">
+                <span id="formula-text" class="text-lg sm:text-2xl font-black text-slate-800">
+                    ...
+                </span>
+            </div>
+
+            <!-- Verification / Answer Button -->
+            <div class="mt-4 flex gap-2">
+                <button id="btn-submit" onclick="checkAnswer()" disabled class="w-full bg-slate-200 text-slate-400 font-black text-xl py-3.5 rounded-2xl shadow-none transition-all cursor-not-allowed">
+                    ✨ ตอบเงินรวม ✨
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Celebration Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border-4 border-amber-400 text-center transform scale-95 transition-transform animate-bounce-in relative overflow-hidden">
+            <div id="modal-icon" class="text-6xl mb-3 filter drop-shadow">🎉 🥕 🥬 🎉</div>
+            <h3 id="modal-title" class="text-2xl sm:text-3xl font-black text-emerald-600 mb-2">เก่งมากเลยจ้า!</h3>
+            <div id="modal-body" class="bg-amber-50 rounded-2xl p-4 border-2 border-amber-200 text-slate-700 text-base sm:text-lg mb-5 leading-relaxed">
+                <!-- Content injected dynamically -->
+            </div>
+            <button id="modal-next-btn" onclick="nextQuestion()" class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white font-extrabold text-lg py-3.5 rounded-2xl shadow-lg hover:from-emerald-600 hover:to-teal-600 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                ลุยข้อถัดไป ➔
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 5 Question dataset
+        const QUESTIONS = [
+            {
+                id: 1,
+                item1: { name: "แครอทสด", icon: "🥕", price: 30, text: "(เท่ากับ 3 สิบ)", bg: "from-orange-50 to-amber-50", border: "border-orange-200", badge: "bg-orange-100 text-orange-900 border-orange-200", priceText: "30 บาท", priceColor: "text-orange-600" },
+                item2: { name: "ผักกาดเขียว", icon: "🥬", price: 20, text: "(เท่ากับ 2 สิบ)", bg: "from-emerald-50 to-teal-50", border: "border-emerald-200", badge: "bg-emerald-100 text-emerald-900 border-emerald-200", priceText: "20 บาท", priceColor: "text-emerald-600" },
+                start: 30,
+                add: 20,
+                jumps: 2,
+                target: 50,
+                vendorText: "ช่วยแม่ค้าคิดหน่อยจ้า ขายแครอทได้ 30 บาท ผักกาด 20 บาท จะได้เงินรวมกี่บาทนะ?"
+            },
+            {
+                id: 2,
+                item1: { name: "มะเขือเทศฉ่ำ", icon: "🍅", price: 20, text: "(เท่ากับ 2 สิบ)", bg: "from-red-50 to-rose-50", border: "border-red-200", badge: "bg-red-100 text-red-900 border-red-200", priceText: "20 บาท", priceColor: "text-red-600" },
+                item2: { name: "ฟักทองทองคำ", icon: "🎃", price: 30, text: "(เท่ากับ 3 สิบ)", bg: "from-amber-50 to-yellow-50", border: "border-amber-200", badge: "bg-amber-100 text-amber-900 border-amber-200", priceText: "30 บาท", priceColor: "text-amber-600" },
+                start: 20,
+                add: 30,
+                jumps: 3,
+                target: 50,
+                vendorText: "ข้อสองจ้า! ขายมะเขือเทศได้ 20 บาท ฟักทอง 30 บาท ได้เงินรวมกี่บาทเอ๋ย?"
+            },
+            {
+                id: 3,
+                item1: { name: "ข้าวโพดหวาน", icon: "🌽", price: 40, text: "(เท่ากับ 4 สิบ)", bg: "from-yellow-50 to-amber-50", border: "border-yellow-200", badge: "bg-yellow-100 text-yellow-900 border-yellow-200", priceText: "40 บาท", priceColor: "text-yellow-700" },
+                item2: { name: "แตงโมหวานฉ่ำ", icon: "🍉", price: 30, text: "(เท่ากับ 3 สิบ)", bg: "from-emerald-50 to-green-50", border: "border-emerald-200", badge: "bg-emerald-100 text-emerald-900 border-emerald-200", priceText: "30 บาท", priceColor: "text-emerald-600" },
+                start: 40,
+                add: 30,
+                jumps: 3,
+                target: 70,
+                vendorText: "ข้อสามแล้วนะจ๊ะ ขายข้าวโพดได้ 40 บาท แตงโม 30 บาท ได้เงินรวมกี่บาทนะ?"
+            },
+            {
+                id: 4,
+                item1: { name: "กล้วยหอมทอง", icon: "🍌", price: 50, text: "(เท่ากับ 5 สิบ)", bg: "from-amber-50 to-yellow-50", border: "border-amber-200", badge: "bg-amber-100 text-amber-900 border-amber-200", priceText: "50 บาท", priceColor: "text-amber-600" },
+                item2: { name: "สตรอว์เบอร์รี", icon: "🍓", price: 40, text: "(เท่ากับ 4 สิบ)", bg: "from-rose-50 to-pink-50", border: "border-rose-200", badge: "bg-rose-100 text-rose-900 border-rose-200", priceText: "40 บาท", priceColor: "text-rose-600" },
+                start: 50,
+                add: 40,
+                jumps: 4,
+                target: 90,
+                vendorText: "ข้อสี่จ้า! ขายกล้วยหอมได้ 50 บาท สตรอว์เบอร์รี 40 บาท รวมเป็นกี่บาทจ๊ะ?"
+            },
+            {
+                id: 5,
+                item1: { name: "แอปเปิลแดง", icon: "🍎", price: 60, text: "(เท่ากับ 6 สิบ)", bg: "from-red-50 to-amber-50", border: "border-red-200", badge: "bg-red-100 text-red-900 border-red-200", priceText: "60 บาท", priceColor: "text-red-600" },
+                item2: { name: "องุ่นม่วง", icon: "🍇", price: 40, text: "(เท่ากับ 4 สิบ)", bg: "from-purple-50 to-fuchsia-50", border: "border-purple-200", badge: "bg-purple-100 text-purple-900 border-purple-200", priceText: "40 บาท", priceColor: "text-purple-600" },
+                start: 60,
+                add: 40,
+                jumps: 4,
+                target: 100,
+                vendorText: "ข้อสุดท้ายแล้ว! ขายแอปเปิลได้ 60 บาท องุ่น 40 บาท ได้เงินกี่บาทเต็มตารางร้อยพอดีนะ?"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let currentStep = 0; // Steps jumped for current question
+
+        // Audio Context for custom sound effects
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playJumpSound() {
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(320, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(680, ctx.currentTime + 0.18);
+
+                gain.gain.setValueAtTime(0.35, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.18);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + 0.18);
+            } catch (e) {
+                console.log("Audio play error", e);
+            }
+        }
+
+        function playSuccessSound() {
+            try {
+                const ctx = getAudioContext();
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+
+                    const startTime = ctx.currentTime + (i * 0.12);
+                    gain.gain.setValueAtTime(0.25, startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.35);
+                });
+            } catch (e) {
+                console.log("Audio play error", e);
+            }
+        }
+
+        async function speakVendorMessage() {
+            const avatar = document.getElementById('vendor-avatar');
+            avatar.classList.add('talking');
+
+            const q = QUESTIONS[currentQuestionIndex];
+            const vendorText = q.vendorText;
+
+            // Gemini 2.5 TTS API call setup
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: "พูดด้วยน้ำเสียงแม่ค้าขายผักใจดี สดใส เป็นกันเอง และชัดเจน: " + vendorText }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: "Aoede" }
+                        }
+                    }
+                }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType || "";
+
+                if (audioData) {
+                    let sampleRate = 24000;
+                    const match = mimeType.match(/rate=(\d+)/);
+                    if (match) sampleRate = parseInt(match[1], 10);
+
+                    const pcmBuffer = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmBuffer);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+
+                    const audio = new Audio(audioUrl);
+                    audio.onended = () => avatar.classList.remove('talking');
+                    audio.onerror = () => avatar.classList.remove('talking');
+                    audio.play();
+                    return;
+                }
+            } catch (err) {
+                console.warn("Gemini TTS API call failed, falling back to Web Speech API", err);
+            }
+
+            // Fallback: Native SpeechSynthesis
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(vendorText);
+                utterance.lang = 'th-TH';
+                utterance.rate = 0.95;
+                utterance.pitch = 1.2;
+                utterance.onend = () => avatar.classList.remove('talking');
+                utterance.onerror = () => avatar.classList.remove('talking');
+                window.speechSynthesis.speak(utterance);
+            } else {
+                setTimeout(() => avatar.classList.remove('talking'), 3000);
+            }
+        }
+
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function pcmToWav(pcm16Data, sampleRate = 24000) {
+            const buffer = new ArrayBuffer(44 + pcm16Data.length * 2);
+            const view = new DataView(buffer);
+
+            function writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            }
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcm16Data.length * 2, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcm16Data.length * 2, true);
+
+            let offset = 44;
+            for (let i = 0; i < pcm16Data.length; i++, offset += 2) {
+                view.setInt16(offset, pcm16Data[i], true);
+            }
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        function renderGrid() {
+            const container = document.getElementById('grid-container');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= 100; i++) {
+                const cell = document.createElement('div');
+                cell.id = `cell-${i}`;
+                cell.className = `chart-cell rounded-xl font-extrabold flex flex-col items-center justify-center text-xs sm:text-sm select-none border shadow-sm relative overflow-hidden`;
+                cell.innerText = i;
+                container.appendChild(cell);
+            }
+        }
+
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            currentStep = 0;
+
+            const q = QUESTIONS[currentQuestionIndex];
+
+            // Update Question Progress Text
+            document.getElementById('question-progress-text').innerText = `ข้อที่ ${q.id} / 5 ⭐️`;
+
+            // Update Speech Text
+            document.getElementById('speech-text').innerHTML = `"${q.vendorText}"`;
+
+            // Update Veggie Showcase
+            const showcase = document.getElementById('veggie-showcase');
+            showcase.innerHTML = `
+                <div class="bg-gradient-to-br ${q.item1.bg} rounded-2xl p-3 border-2 ${q.item1.border} flex flex-col items-center text-center float-anim shadow-sm">
+                    <div class="text-4xl mb-1 filter drop-shadow">${q.item1.icon}</div>
+                    <span class="font-bold text-slate-800 text-sm">${q.item1.name}</span>
+                    <span class="text-lg font-black ${q.item1.priceColor} bg-white/80 px-3 py-0.5 rounded-full mt-1 border border-slate-200">
+                        ${q.item1.priceText}
+                    </span>
+                    <span class="text-xs font-semibold text-slate-500 mt-1">${q.item1.text}</span>
+                </div>
+
+                <div class="bg-gradient-to-br ${q.item2.bg} rounded-2xl p-3 border-2 ${q.item2.border} flex flex-col items-center text-center float-anim-reverse shadow-sm">
+                    <div class="text-4xl mb-1 filter drop-shadow">${q.item2.icon}</div>
+                    <span class="font-bold text-slate-800 text-sm">${q.item2.name}</span>
+                    <span class="text-lg font-black ${q.item2.priceColor} bg-white/80 px-3 py-0.5 rounded-full mt-1 border border-slate-200">
+                        ${q.item2.priceText}
+                    </span>
+                    <span class="text-xs font-semibold text-slate-500 mt-1">${q.item2.text}</span>
+                </div>
+            `;
+
+            // Update Legend
+            const legendBox = document.getElementById('legend-box');
+            legendBox.innerHTML = `
+                <span class="flex items-center gap-1.5 ${q.item1.badge} px-3 py-1 rounded-full font-bold">
+                    1-${q.start} (${q.item1.name})
+                </span>
+                <span class="flex items-center gap-1.5 ${q.item2.badge} px-3 py-1 rounded-full font-bold">
+                    +${q.add} (${q.item2.name})
+                </span>
+            `;
+
+            // Build Dynamic Jump Buttons
+            const btnContainer = document.getElementById('jump-buttons-container');
+            btnContainer.innerHTML = '';
+
+            for (let k = 1; k <= q.jumps; k++) {
+                const jumpFrom = q.start + (k - 1) * 10;
+                const jumpTo = q.start + k * 10;
+
+                const btn = document.createElement('button');
+                btn.id = `btn-jump-${k}`;
+                btn.onclick = () => performJumpStep(k);
+                btn.className = "w-full bg-slate-200 text-slate-400 font-bold py-3.5 px-4 rounded-2xl cursor-not-allowed transition-all flex items-center justify-between text-base sm:text-lg";
+                btn.innerHTML = `
+                    <span class="flex items-center gap-2">
+                        <span>🐰</span> กระโดดครั้งที่ ${k} (+10)
+                    </span>
+                    <span class="bg-black/5 px-3 py-1 rounded-xl text-sm font-black">${jumpFrom} ➔ ${jumpTo}</span>
+                `;
+                btnContainer.appendChild(btn);
+            }
+
+            updateGridVisuals();
+        }
+
+        function updateGridVisuals() {
+            const q = QUESTIONS[currentQuestionIndex];
+            document.getElementById('jump-step-count').innerText = `${currentStep} / ${q.jumps} ครั้ง`;
+
+            // Reset cells
+            for (let i = 1; i <= 100; i++) {
+                const cell = document.getElementById(`cell-${i}`);
+                if (!cell) continue;
+
+                cell.className = `chart-cell rounded-xl font-extrabold flex flex-col items-center justify-center text-xs sm:text-sm select-none border shadow-sm relative overflow-hidden`;
+
+                // Item 1 initial range
+                if (i <= q.start) {
+                    cell.classList.add('bg-orange-100', 'text-orange-950', 'border-orange-300');
+                    if (i === q.start) cell.classList.add('ring-2', 'ring-orange-500', 'font-black');
+                } else {
+                    cell.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+                }
+
+                // Highlight jumped ranges
+                if (currentStep > 0 && i > q.start) {
+                    const currentJumpMax = q.start + (currentStep * 10);
+                    if (i <= currentJumpMax) {
+                        cell.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+                        cell.classList.add('bg-emerald-100', 'text-emerald-950', 'border-emerald-300');
+                    }
+                }
+
+                // Clear bunny badges
+                const existingBadge = cell.querySelector('.bunny-badge');
+                if (existingBadge) existingBadge.remove();
+            }
+
+            // Current position
+            const currentPos = q.start + (currentStep * 10);
+            const targetCell = document.getElementById(`cell-${currentPos}`);
+            if (targetCell) {
+                targetCell.classList.remove('bg-white', 'bg-orange-100', 'bg-emerald-100');
+                targetCell.classList.add('bg-amber-400', 'text-amber-950', 'border-amber-500', 'bounce-jump', 'ring-4', 'ring-amber-300', 'z-10');
+                
+                const badge = document.createElement('span');
+                badge.className = 'bunny-badge text-xs absolute top-0.5 right-0.5 transform filter drop-shadow';
+                badge.innerText = '🐰';
+                targetCell.appendChild(badge);
+            }
+
+            document.getElementById('current-pos-badge').innerText = currentPos;
+
+            // Update jump buttons status
+            for (let k = 1; k <= q.jumps; k++) {
+                const btn = document.getElementById(`btn-jump-${k}`);
+                if (!btn) continue;
+
+                if (k <= currentStep) {
+                    btn.disabled = true;
+                    btn.className = "w-full bg-emerald-100 text-emerald-800 font-bold py-3.5 px-4 rounded-2xl cursor-default transition-all flex items-center justify-between text-base sm:text-lg border-2 border-emerald-300";
+                } else if (k === currentStep + 1) {
+                    btn.disabled = false;
+                    btn.className = "w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-3.5 px-4 rounded-2xl shadow-md transition-all flex items-center justify-between text-base sm:text-lg pulse-glow cursor-pointer transform hover:-translate-y-0.5";
+                } else {
+                    btn.disabled = true;
+                    btn.className = "w-full bg-slate-200 text-slate-400 font-bold py-3.5 px-4 rounded-2xl cursor-not-allowed transition-all flex items-center justify-between text-base sm:text-lg";
+                }
+            }
+
+            // Formula and submit button state
+            const formulaText = document.getElementById('formula-text');
+            const btnSubmit = document.getElementById('btn-submit');
+
+            if (currentStep < q.jumps) {
+                btnSubmit.disabled = true;
+                btnSubmit.className = "w-full bg-slate-200 text-slate-400 font-black text-xl py-3.5 rounded-2xl shadow-none cursor-not-allowed transition-all";
+                
+                if (currentStep === 0) {
+                    formulaText.innerHTML = `${q.start} บาท + ${q.add} บาท = <span class="text-amber-600 font-extrabold underline decoration-wavy">?</span> บาท`;
+                } else {
+                    formulaText.innerHTML = `${q.start} + ${currentStep * 10} = <span class="text-emerald-600 font-bold">${currentPos}</span> <span class="text-slate-500 font-medium font-sans text-base">(บวกต่ออีก 10)</span>`;
+                }
+            } else {
+                btnSubmit.disabled = false;
+                btnSubmit.className = "w-full bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-500 hover:to-orange-600 text-white font-black text-xl py-3.5 rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 pulse-glow cursor-pointer";
+                
+                let tensSequence = Array(q.jumps).fill("10").join(" + ");
+                formulaText.innerHTML = `${q.start} + ${tensSequence} = <span class="text-emerald-600 font-black text-3xl">${q.target}</span> บาท!`;
+                btnSubmit.innerText = `✨ ตอบเงินรวมคือ ${q.target} บาท! ✨`;
+            }
+        }
+
+        function performJumpStep(stepNum) {
+            if (stepNum === currentStep + 1) {
+                currentStep = stepNum;
+                playJumpSound();
+                updateGridVisuals();
+            }
+        }
+
+        function resetCurrentQuestion() {
+            currentStep = 0;
+            updateGridVisuals();
+        }
+
+        function checkAnswer() {
+            const q = QUESTIONS[currentQuestionIndex];
+            if (currentStep === q.jumps) {
+                playSuccessSound();
+
+                const modalIcon = document.getElementById('modal-icon');
+                const modalTitle = document.getElementById('modal-title');
+                const modalBody = document.getElementById('modal-body');
+                const nextBtn = document.getElementById('modal-next-btn');
+
+                modalIcon.innerHTML = `🎉 ${q.item1.icon} ${q.item2.icon} 🎉`;
+
+                if (currentQuestionIndex < QUESTIONS.length - 1) {
+                    modalTitle.innerText = "ถูกต้องแล้วจ้า!";
+                    modalBody.innerHTML = `
+                        ขาย${q.item1.name} ${q.start} บาท รวมกับ ${q.item2.name} ${q.add} บาท<br>
+                        กระโดดทีละ 10 ทั้งหมด ${q.jumps} ครั้ง<br>
+                        <span class="text-xl font-black text-amber-600 block mt-2">ได้เงินรวมทั้งหมด ${q.target} บาทพอดี!</span>
+                    `;
+                    nextBtn.innerText = "ลุยข้อถัดไป ➔";
+                } else {
+                    modalTitle.innerText = "🏆 เก่งมากๆ! ผ่านครบทั้ง 5 ข้อแล้ว!";
+                    modalBody.innerHTML = `
+                        หนูน้อยเก่งมาก! คิดเงินรวมของผักผลไม้ได้ถูกต้องครบทุกข้อ<br>
+                        <span class="text-xl font-black text-emerald-600 block mt-2">ได้รับเหรียญทองนักคิดเงินยอดเยี่ยม! 🥇✨</span>
+                    `;
+                    nextBtn.innerText = "เล่นใหม่อีกครั้ง 🔄";
+                }
+
+                document.getElementById('success-modal').classList.remove('hidden');
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById('success-modal').classList.add('hidden');
+            if (currentQuestionIndex < QUESTIONS.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            } else {
+                loadQuestion(0);
+            }
+        }
+
+        // Initialize grid on DOM content loaded
+        window.addEventListener('DOMContentLoaded', () => {
+            renderGrid();
+            loadQuestion(0);
+        });
+    </script>
+</body>
+</html>
